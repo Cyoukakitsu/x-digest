@@ -19,13 +19,19 @@ export function buildOverallPrompt(
   return `以下は複数のXアカウントの今日のサマリーです。全体のハイライトを3〜5点の箇条書きで日本語でまとめてください。\n\n${content}`
 }
 
+function getOpenRouter() {
+  if (!process.env.OPENROUTER_API_KEY) {
+    throw new Error('OPENROUTER_API_KEY is not configured')
+  }
+  return createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY })
+}
+
 export async function generateAccountSummary(
   username: string,
   posts: RssPost[]
 ): Promise<string> {
-  const openrouter = createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY })
   const { text } = await generateText({
-    model: openrouter(MODEL),
+    model: getOpenRouter()(MODEL),
     prompt: buildAccountPrompt(username, posts),
   })
   return text
@@ -34,9 +40,8 @@ export async function generateAccountSummary(
 export async function generateOverallSummary(
   summaries: { username: string; summary: string }[]
 ): Promise<string> {
-  const openrouter = createOpenRouter({ apiKey: process.env.OPENROUTER_API_KEY })
   const { text } = await generateText({
-    model: openrouter(MODEL),
+    model: getOpenRouter()(MODEL),
     prompt: buildOverallPrompt(summaries),
   })
   return text

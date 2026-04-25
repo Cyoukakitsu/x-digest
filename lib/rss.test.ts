@@ -37,10 +37,10 @@ describe('postsToText', () => {
       { title: 'Foo', content: 'Bar', pubDate: oneHourAgo, link: 'https://x.com/2' },
     ]
     const text = postsToText(posts)
-    expect(text).toContain('1.')
-    expect(text).toContain('Hello')
-    expect(text).toContain('World')
-    expect(text).toContain('2.')
-    expect(text).toContain('Foo')
+    expect(text).toBe('1. Hello\nWorld\n\n2. Foo\nBar')
+  })
+
+  it('returns empty string for empty input', () => {
+    expect(postsToText([])).toBe('')
   })
 })

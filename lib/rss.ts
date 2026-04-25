@@ -2,11 +2,9 @@
 import Parser from 'rss-parser'
 import type { RssPost } from '@/types'
 
-const parser = new Parser()
-
 export function filterRecentPosts(posts: RssPost[]): RssPost[] {
   const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000)
-  return posts.filter(p => p.pubDate > cutoff)
+  return posts.filter(p => p.pubDate >= cutoff)
 }
 
 export function postsToText(posts: RssPost[]): string {
@@ -16,12 +14,13 @@ export function postsToText(posts: RssPost[]): string {
 }
 
 export async function fetchAccountPosts(rssUrl: string): Promise<RssPost[]> {
+  const parser = new Parser()
   const feed = await parser.parseURL(rssUrl)
   const posts: RssPost[] = feed.items
-    .filter(item => item.pubDate != null)
+    .filter(item => !!item.pubDate && !isNaN(new Date(item.pubDate).getTime()))
     .map(item => ({
       title: item.title ?? '',
-      content: item.contentSnippet ?? item.content ?? '',
+      content: item.contentSnippet || item.content || '',
       pubDate: new Date(item.pubDate!),
       link: item.link ?? '',
     }))

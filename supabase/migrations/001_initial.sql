@@ -24,3 +24,6 @@ CREATE TABLE digest_entries (
   post_count    int NOT NULL,
   created_at    timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE INDEX ON digest_entries (digest_id);
+CREATE INDEX ON digest_entries (x_account_id);

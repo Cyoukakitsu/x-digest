@@ -4,7 +4,7 @@ import { generateText } from 'ai'
 import { postsToText } from './rss'
 import type { RssPost } from '@/types'
 
-const MODEL = 'deepseek/deepseek-chat:free'
+const MODEL = 'tencent/hy3-preview:free'
 
 export function buildAccountPrompt(username: string, posts: RssPost[]): string {
   return `以下は@${username}の過去24時間のXポストです。重要な内容を3〜5文で日本語で要約してください。\n\n${postsToText(posts)}`
